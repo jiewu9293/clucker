@@ -1,6 +1,6 @@
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
-
+from django.contrib import messages
 from microblogs.forms import SignUpForm
 from microblogs.forms import LogInForm
 from django.urls import reverse
@@ -25,6 +25,8 @@ class LogInViewTestCase(TestCase,LogInTester):
         form = response.context['form']
         self.assertTrue(isinstance(form,LogInForm))
         self.assertFalse(form.is_bound)
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 0)
 
     def test_unsuccessful_log_in(self):
         form_input =  {'username':'@johndoe','password':'WrongPassword123'}
@@ -35,6 +37,9 @@ class LogInViewTestCase(TestCase,LogInTester):
         self.assertTrue(isinstance(form, LogInForm))
         self.assertFalse(form.is_bound)
         self.assertFalse(self.is_logged_in())
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(messages_list[0].level, messages.ERROR)
 
     def test_successful_log_in(self):
         form_input = {'username': '@johndoe', 'password': 'Password123'}
@@ -44,6 +49,8 @@ class LogInViewTestCase(TestCase,LogInTester):
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'feed.html')
         self.assertTrue(self.is_logged_in())
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 0)
 
     def test_valid_log_in_by_inactive_user(self):
         self.user.is_active = False
@@ -56,3 +63,6 @@ class LogInViewTestCase(TestCase,LogInTester):
         self.assertTrue(isinstance(form, LogInForm))
         self.assertFalse(form.is_bound)
         self.assertFalse(self.is_logged_in())
+        messages_list = list(response.context['messages'])
+        self.assertEqual(len(messages_list), 1)
+
