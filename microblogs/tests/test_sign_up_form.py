@@ -1,8 +1,9 @@
 from django.test import TestCase
 
 from microblogs.forms import SignUpForm
-
+from django.contrib.auth.hashers import check_password
 from django import forms
+from microblogs.models import User
 
 
 class SignUpFormTestCase(TestCase):
@@ -66,3 +67,17 @@ class SignUpFormTestCase(TestCase):
         self.form_input['password_confirmation'] = 'WrongPassword123'
         form = SignUpForm(data=self.form_input)
         self.assertFalse(form.is_valid())
+
+    def test_form_must_save_correctly(self):
+        form = SignUpForm(data=self.form_input)
+        before_count = User.objects.count()
+        form.save()
+        after_count = User.objects.count()
+        self.assertEqual(after_count, before_count + 1)
+        user = User.objects.get(username='@johndoe')
+        self.assertEqual(user.first_name, 'John')
+        self.assertEqual(user.last_name, 'Doe')
+        self.assertEqual(user.email, 'johndoe@example.org')
+        self.assertEqual(user.bio, 'my bio')
+        is_password_correct = check_password('Password123', user.password)
+        self.assertTrue(is_password_correct)

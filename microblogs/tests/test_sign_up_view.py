@@ -55,3 +55,4 @@ class SignUpViewTestCase(TestCase):
         is_password_correct = check_password('Password123',user.password)
         self.assertTrue(is_password_correct)
 
+

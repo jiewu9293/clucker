@@ -10,14 +10,7 @@ def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            User.objects.create_user(
-                form.cleaned_data.get('username'),
-                email = form.cleaned_data.get('email'),
-                first_name = form.cleaned_data.get('first_name'),
-                last_name = form.cleaned_data.get('last_name'),
-                bio = form.cleaned_data.get('bio'),
-                password = form.cleaned_data.get('new_password')
-            )
+            form.save()
             return redirect('feed')
 
     else:
