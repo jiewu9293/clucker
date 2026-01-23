@@ -1,4 +1,36 @@
 from django.test import TestCase
+from microblogs.forms import LogInForm
+from django import forms
 
 class LogInFormTestCase(TestCase):
-    pass 
+    def setUp(self):
+        self.form_input = {'username':'@johndoe', 'password':'Password123'}
+    def test_form_contains_required_fields(self):
+        form = LogInForm()
+        self.assertIn('username', form.fields)
+        self.assertIn('password', form.fields)
+        password_widget = form.fields['password'].widget
+        self.assertIsInstance(password_widget, forms.PasswordInput)
+
+    def test_form_accepts_valid_data(self):
+        form = LogInForm(data = self.form_input)
+        self.assertTrue(form.is_valid())
+
+    def test_form_rejects_blank_username(self):
+        self.form_input['username'] = ''
+        form = LogInForm(data = self.form_input)
+        self.assertFalse(form.is_valid())
+
+    def test_form_rejects_blank_password(self):
+        self.form_input['password'] = ''
+        form = LogInForm(data = self.form_input)
+        self.assertFalse(form.is_valid())
+    def test_form_accepts_incorrect_password(self):
+        self.form_input['password'] = 'pwd'
+        form = LogInForm(data = self.form_input)
+        self.assertTrue(form.is_valid())
+
+    def test_form_accepts_incorrect_username(self):
+        self.form_input['username'] = 'ja'
+        form = LogInForm(data = self.form_input)
+        self.assertTrue(form.is_valid())
