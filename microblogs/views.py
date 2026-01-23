@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import SignUpForm
+from .forms import SignUpForm, LogInForm
 from .models import User
 
 # Create your views here.
@@ -21,4 +21,5 @@ def feed(request):
     return render(request,'feed.html')
 
 def log_in(request):
-    return render(request,'log_in.html')
+    form = LogInForm()
+    return render(request,'log_in.html',{'form':form})
