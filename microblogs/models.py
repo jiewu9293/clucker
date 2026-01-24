@@ -13,3 +13,11 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50,blank=False)
     email = models.EmailField(blank=False,unique=True)
     bio = models.TextField(blank=True,validators=[MaxLengthValidator(520)])
+
+class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=280)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

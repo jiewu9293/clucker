@@ -3,6 +3,12 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12 col-md-6 offset-md-3">
+            <h3>New post</h3>
+        <form action="{% url 'new_post' %}" method="post">
+        {% csrf_token %}
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <button type="submit" class="btn btn-primary">Cluck</button>
+      </form>
         <h1>Feed</h1>
         <p><b>UNDER CONSTRUCTION</b>: this page will contain a user_specific feed clucks </p>
         </div>

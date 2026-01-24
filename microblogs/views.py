@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import SignUpForm, LogInForm
+from .forms import SignUpForm, LogInForm,PostForm
 from .models import User
 
 # Create your views here.
@@ -21,7 +21,8 @@ def sign_up(request):
     return render(request,'sign_up.html',{'form':form})
 
 def feed(request):
-    return render(request,'feed.html')
+    form = PostForm()
+    return render(request,'feed.html',{'form':form})
 
 def log_in(request):
     if request.method == 'POST':
@@ -39,3 +40,19 @@ def log_in(request):
 def log_out(request):
     logout(request)
     return redirect('home')
+
+def new_post(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            current_user = request.user
+            form = PostForm(request.POST)
+            if form.is_valid():
+                text = form.cleaned_data.get('text')
+                post = Post.objects.create(author=current_user, text=text)
+                return redirect('feed')
+            else:
+                return render(request, 'feed.html', {'form': form})
+        else:
+            return redirect('log_in')
+    else:
+        return HttpResponseForbidden()
