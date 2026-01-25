@@ -12,12 +12,12 @@ class UserListTest(TestCase):
     def test_get_user_list(self):
         self._create_test_users(15)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'user_list.html')
-        self.assertEqual(len(response.context['users']), 15)
+        self.assertEqual(response.status_code,200)
+        self.assertTemplateUsed(response,'user_list.html')
+        self.assertEqual(len(response.context['users']),15)
         for user_id in range(15):
-            self.assertContains(response, f'@user{user_id}')
-            self.assertContains(response, f'First{user_id}')
+            self.assertContains(response,f'@user{user_id}')
+            self.assertContains(response,f'First{user_id}')
             self.assertContains(response, f'Last{user_id}')
             user = User.objects.get(username=f'@user{user_id}')
             user_url = reverse('show_user', kwargs={'user_id': user.id})
