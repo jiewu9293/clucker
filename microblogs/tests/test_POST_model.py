@@ -4,7 +4,6 @@ from microblogs.models import Post, User
 
 class PostTest(TestCase):
     def setUp(self):
-        super(TestCase, self).setUp()
         self.user = User.objects.create_user(
             '@johndoe',
             first_name='John',
