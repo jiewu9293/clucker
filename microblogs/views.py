@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse,HttpResponseForbidden
 from .forms import SignUpForm, LogInForm,PostForm
-from .models import User
+from .models import User,Post
 
 # Create your views here.
 def home(request):
