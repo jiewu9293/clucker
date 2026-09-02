@@ -9,7 +9,16 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
+import sys
 
+# Label the environment we are in.
+if 'test' in sys.argv:
+    ENVIRONMENT = 'test'
+elif 'PYTHONANYWHERE_SITE' in os.environ:
+    ENVIRONMENT = 'production'
+else:
+    ENVIRONMENT = 'development'
 from pathlib import Path
 from django.contrib.messages import constants as message_constants
 import os
@@ -23,10 +32,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zxjao)yj)(^6tn$-+u+!65dnqj#nj@qs91&2ve!od%2eus^o52'
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ENVIRONMENT == 'development'
 
 ALLOWED_HOSTS = [
     'jackdeng.pythonanywhere.com',
@@ -140,3 +149,11 @@ MESSAGE_TAGS = {
     message_constants.DEBUG: 'dark',
     message_constants.ERROR: 'danger',
 }
+# Security settings
+if ENVIRONMENT == 'production':
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_PRELOAD = True
